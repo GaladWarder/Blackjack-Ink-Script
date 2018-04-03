@@ -50,7 +50,7 @@ I sit at my favorite chair, the one just in front of the dealer.
 
 ===play_blackjack===
 
-I look at my wad of cash - I have about ${money} in small bills.
+I look at my wad of cash - {money > 5: I have about ${money} in small bills.|I'm out of money!}
 
 +	{ money >= 5 }I put $5 into the betting circle.
 	~money = money - 5
@@ -64,11 +64,11 @@ I look at my wad of cash - I have about ${money} in small bills.
 +	{ money >= 50 }I put $50 into the betting circle.
 	~money = money - 50
 	~bet = 50
-+	I push the entire wad into the circle.
++	{ money > 5 }I push the entire wad into the circle.
 	Let's see if we can double this ${money}!
 	~bet = money
 	~money = 0
-*	[Leave Casino]I stand up and leave the casino with ${money}.
+*	[I leave the casino]I stand up and leave the casino with ${money}.
 	->leave_casino
 
 -	{knows_dealers_name:Harold|The dealer} {~nods|smirks|grins|raises his eyebrow|smiles} at me and deals the cards.
@@ -120,7 +120,12 @@ I look at my wad of cash - I have about ${money} in small bills.
 	-dealer_hand_value > hand_value && dealer_hand_value < 21:
 	He's got me beat. My bet joins his stack on the other side of the table.
 	->play_blackjack
-
+	
+	-hand_value > dealer_hand_value && dealer_hand_value > 17:
+		I win! {knows_dealers_name:Harold|The dealer} counts out ${bet} and pushed it across the felt to me.
+		~money = money + bet * 2
+		->play_blackjack
+		
 	-dealer_hand_value == 17:
 	{
 		-hand_value > dealer_hand_value:
@@ -167,11 +172,10 @@ I look at my wad of cash - I have about ${money} in small bills.
 			Oh well, it's against the rules, but I win so I'm not going to complain.
 			~money = money + bet * 2
 			->play_blackjack
-
-		-else
-			{knows_dealers_name:Harold|The dealer} takes my bet and shoots me a{ smirk| threatening look| cheeky grin|n angry glare}. I guess I lose this round.
+    
+    -else:
+		{knows_dealers_name:Harold|The dealer} takes my bet and shoots me a{ smirk| threatening look| cheeky grin|n angry glare}. I guess I lose this round.
 			->play_blackjack
-
 
 	}
 }
